@@ -116,13 +116,13 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $updates = $ui->id('updates', 1, 'post');
     $gamebinary = $ui->startparameter('gamebinary', 'post');
     $gamebinaryWin = $ui->startparameter('gamebinaryWin', 'post');
-    $copyExtensions = $ui->startparameter('copyExtensions', 'post');
     $cmd = $ui->startparameter('cmd', 'post');
     $iptables = $ui->startparameter('iptables', 'post');
     $protectedSaveCFGs = $ui->startparameter('protectedSaveCFGs', 'post');
     $description = $ui->startparameter('description', 'post');
     $binarydir = $ui->folder('binarydir', 'post');
     $modfolder = $ui->folder('modfolder', 'post');
+    $copyExtensions = $ui->startparameter('copyExtensions', 'post');
     $map = $ui->mapname('map', 'post');
     $mapGroup = $ui->mapname('mapGroup', 'post');
     $configs = $ui->startparameter('configs', 'post');
@@ -216,14 +216,14 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                             if ($node->nodeName == 'gamebinaryWin') {
                                 $gamebinaryWin = $node->nodeValue;
                             }
-                            if ($node->nodeName == 'copyExtensions') {
-                                $copyExtensions = $node->nodeValue;
-                            }
                             if ($node->nodeName == 'binarydir') {
                                 $binarydir = $node->nodeValue;
                             }
                             if ($node->nodeName == 'modfolder') {
                                 $modfolder = $node->nodeValue;
+                            }
+                            if ($node->nodeName == 'copyExtensions') {
+                                $copyExtensions = $node->nodeValue;
                             }
                             if ($node->nodeName == 'fps') {
                                 $fps = $node->nodeValue;
@@ -334,9 +334,9 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $description = $row['description'];
                 $gamebinary = $row['gamebinary'];
                 $gamebinaryWin = $row['gamebinaryWin'];
-                $copyExtensions = $row['copyExtensions'];
                 $binarydir = $row['binarydir'];
                 $modfolder = $row['modfolder'];
+                $copyExtensions = $row['copyExtensions'];
                 $fps = $row['fps'];
                 $map = $row['map'];
                 $mapGroup = $row['mapGroup'];
