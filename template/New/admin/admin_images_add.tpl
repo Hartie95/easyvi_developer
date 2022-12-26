@@ -251,7 +251,7 @@
                         </div>
                         
                         <div class="form-group">
-                            <label class="control-label" for="inputCopyExtensions"><?php echo $sprache->mod;?></label>
+                            <label class="control-label" for="inputCopyExtensions"><?php echo $sprache->copyExtensions;?></label>
                             <div class="controls"><input class="form-control" id="inputCopyExtensions" type="text" name="copyExtensions" value="<?php echo $copyExtensions;?>"></div>
                         </div>
 

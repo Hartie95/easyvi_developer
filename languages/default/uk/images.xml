@@ -19,6 +19,7 @@
     <bin_folder>Binary folder (e.g. orangebox)</bin_folder>
     <configs>User-editable configs</configs>
     <configedit>Cvars which the user must not modify</configedit>
+    <copyExtensions>Extensions that should be copied</copyExtensions>
     <copyStartBinary>Copy Binary</copyStartBinary>
     <del_temp>Delete template</del_temp>
     <description>Description</description>
