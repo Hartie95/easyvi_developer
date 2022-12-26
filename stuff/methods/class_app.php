@@ -213,7 +213,7 @@ class AppServer {
 
         global $sql, $aeskey;
 
-        $query = $sql->prepare("SELECT t.`id` AS `template_id`,t.`steamgame`,t.`gameq`,t.`shorten`,t.`protected`,t.`protectedSaveCFGs`,t.`gamebinary`,t.`gamebinaryWin`,t.`binarydir`,t.`modfolder`,t.`copyStartBinary`,t.`cmd` AS `template_cmd`,t.`modcmds` AS `template_modcmds`,t.`steamGameserverToken`,`configedit`,s.*,AES_DECRYPT(s.`uploaddir`,:aeskey) AS `d_uploaddir`,AES_DECRYPT(s.`webapiAuthkey`,:aeskey) AS `d_webapiauthkey`,AES_DECRYPT(s.`steamServerToken`,:aeskey) AS `d_steamServerToken` FROM `serverlist` AS s INNER JOIN `servertypes` AS t ON t.`id`=s.`servertype` WHERE s.`id`=:id AND s.`switchID`=:appServerID LIMIT 1");
+        $query = $sql->prepare("SELECT t.`id` AS `template_id`,t.`steamgame`,t.`gameq`,t.`shorten`,t.`protected`,t.`protectedSaveCFGs`,t.`gamebinary`,t.`gamebinaryWin`,t.`binarydir`,t.`modfolder`,t.`copyExtensions`,t.`copyStartBinary`,t.`cmd` AS `template_cmd`,t.`modcmds` AS `template_modcmds`,t.`steamGameserverToken`,`configedit`,s.*,AES_DECRYPT(s.`uploaddir`,:aeskey) AS `d_uploaddir`,AES_DECRYPT(s.`webapiAuthkey`,:aeskey) AS `d_webapiauthkey`,AES_DECRYPT(s.`steamServerToken`,:aeskey) AS `d_steamServerToken` FROM `serverlist` AS s INNER JOIN `servertypes` AS t ON t.`id`=s.`servertype` WHERE s.`id`=:id AND s.`switchID`=:appServerID LIMIT 1");
         $query->execute(array(':aeskey' => $aeskey, ':id' => $id, ':appServerID' => $appServerID));
 
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
@@ -227,6 +227,7 @@ class AppServer {
             $this->appServerDetails['template']['gameBinary'] = ($this->appMasterServerDetails['os'] == 'L') ? (string) $row['gamebinary'] : (string) $row['gamebinaryWin'];
             $this->appServerDetails['template']['binarydir'] = (string) $row['binarydir'];
             $this->appServerDetails['template']['modfolder'] = (string) $row['modfolder'];
+            $this->appServerDetails['template']['copyExtensions'] = (string) $row['copyExtensions'];
             $this->appServerDetails['template']['modcmds'] = (string) $row['template_modcmds'];
             $this->appServerDetails['template']['steamgame'] = (string) $row['steamgame'];
             $this->appServerDetails['template']['steamGameserverToken'] = (string) $row['steamGameserverToken'];
@@ -591,7 +592,7 @@ class AppServer {
         $serverDir = ($this->appServerDetails['protectionModeStarted'] == 'Y') ? 'pserver/' : 'server/';
         $absolutePath = $this->removeSlashes($this->appServerDetails['homeDir'] . '/' . $this->appServerDetails['userName'] . '/' . $serverDir);
 
-        $copyFileExtensions = array('xml', 'vdf', 'cfg', 'con', 'conf', 'config', 'ini', 'gam', 'txt', 'log', 'smx', 'sp', 'db', 'lang', 'lua', 'props', 'properties', 'json', 'example', 'html', 'yml', 'yaml', 'csv', 'eco');
+        $defaultCopyFileExtensions = array('xml', 'vdf', 'cfg', 'con', 'conf', 'config', 'ini', 'gam', 'txt', 'log', 'smx', 'sp', 'db', 'lang', 'lua', 'props', 'properties', 'json', 'example', 'html', 'yml', 'yaml', 'csv', 'eco');
 
         if ($standalone and isset($scriptName)) {
             $script = $this->shellScriptHeader;
@@ -609,6 +610,8 @@ class AppServer {
         $script .= 'fi' . "\n";
 
         foreach ($templates as $template) {
+            $copyFileExtensions = empty($this->appServerDetails['template']['copyExtensions']) ?  $defaultCopyFileExtensions : explode(',', $this->appServerDetails['template']['copyExtensions']);
+            $this->addLogline('app_server.log', 'template copy: ' . $template . ' result: ' . $copyFileExtensions . ' \ntemplate: '.$this->appServerDetails['template']['copyExtensions']);
 
             $absoluteTargetTemplatePath = $this->removeSlashes($absolutePath . $template . '/');
             $sourceTemplate = (substr($template, -2) == '-2' or substr($template, -2) == '-3') ? substr($template, 0, (strlen($template) -2)) : $template;
